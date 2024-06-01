@@ -1,66 +1,9 @@
-## Foundry
+# Thought Process:
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
+5000 'genomes' is a lot of data to store on-chain. Does it really have to be this way?
 
-Foundry consists of:
+I propose to bypass storing the genomes on chain, instead calculating them from a random seed supplied during deployment. The maximum values are written into the bytecode, so the only storage we use is the random seed. We can then calculate the attribute values using bitwise operations. We can still use a struct to conveniently represent the various attributes. This implementation only requires 23194 gas to "read" the attributes of a given token. 
 
--   **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
--   **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
--   **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
--   **Chisel**: Fast, utilitarian, and verbose solidity REPL.
+If this is not possible - say for example the values have to be generated individually off-chain for some reason - then I believe the best way to store them would be as an array of uint96 values, unpacking them in a similar way to `_unpackAttributes()`, but using bitwise operations consistent with uint96 and without the need to adjust the values (as we assume they will be provided within the limits). Seems expensive though...
 
-## Documentation
 
-https://book.getfoundry.sh/
-
-## Usage
-
-### Build
-
-```shell
-$ forge build
-```
-
-### Test
-
-```shell
-$ forge test
-```
-
-### Format
-
-```shell
-$ forge fmt
-```
-
-### Gas Snapshots
-
-```shell
-$ forge snapshot
-```
-
-### Anvil
-
-```shell
-$ anvil
-```
-
-### Deploy
-
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
-```
-
-### Cast
-
-```shell
-$ cast <subcommand>
-```
-
-### Help
-
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
-```
